@@ -1,0 +1,27 @@
+{
+  "env": {
+    "gEmbeddedIncludePath": [
+      "/usr/include",
+      "/usr/lib/jvm/java-21-openjdk-arm64/include/**",
+      "${workspaceFolder}/include/**",
+      "${workspaceFolder}/source/**",
+      "${workspaceFolder}/test/**"
+    ]
+  },
+  "configurations": [
+    {
+      "name": "Linux",
+      "compilerPath": "/usr/bin/gcc",
+      "intelliSenseMode": "linux-gcc-arm64",
+      "configurationProvider": "ms-vscode.cmake-tools",
+      "includePath": ["${gEmbeddedIncludePath}"],
+      "browse": {
+        "path": ["${gEmbeddedIncludePath}"],
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "cStandard": "gnu23",
+      "cppStandard": "gnu++23"
+    }
+  ],
+  "version": 4
+}
