@@ -1,7 +1,6 @@
 package com.comert.gembedded.api.device.provider;
 
 import com.comert.gembedded.api.device.DeviceConfigurationException;
-import com.comert.gembedded.api.device.provider.DeviceContextProviderParent;
 import com.comert.gembedded.device.nativeinterface.ConfigurationVisitor;
 import com.comert.gembedded.device.nativeinterface.DeviceDriver;
 
