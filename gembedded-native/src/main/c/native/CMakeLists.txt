@@ -1,4 +1,4 @@
-find_package(gcmake-build CONFIG 1.0.5 REQUIRED)
+find_package(gcmake-build CONFIG 1.0.6 REQUIRED)
 
 include(Gcmake_Begin)
 
@@ -12,12 +12,10 @@ include_directories(${JNI_INCLUDE_DIRS})
 
 gcmake_add_library(${GCMAKE_PROJECT_NAME} SHARED)
 
-gcmake_add_test(${GCMAKE_PROJECT_NAME}_test "${GCMAKE_PROJECT_NAME}")
-
-target_link_libraries(${GCMAKE_PROJECT_NAME}_test
-    PRIVATE 
-        ${JNI_LIBRARIES}
-        pthread
+gcmake_add_test(${GCMAKE_PROJECT_NAME}_test 
+    PRIVATE     
+        ${GCMAKE_PROJECT_NAME}
+        ${JNI_LIBRARIES}        
 )
 
 include(Gcmake_End)
