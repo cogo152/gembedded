@@ -1,6 +1,6 @@
-find_package(gcmake-build CONFIG 1.0.6 REQUIRED)
+find_package(gcmake-build REQUIRED)
 
-include(Gcmake_Begin)
+include(Im_Namen_GOTTes)
 
 cmake_minimum_required(VERSION ${GCMAKE_CMAKE_VERSION})
 
@@ -18,4 +18,4 @@ gcmake_add_test(${GCMAKE_PROJECT_NAME}_test
         ${JNI_LIBRARIES}        
 )
 
-include(Gcmake_End)
+include(GOTT_sei_Dank)
