@@ -1,3 +1,5 @@
+list(APPEND CMAKE_FIND_ROOT_PATH "$ENV{GCMAKE_HOME}/gcmake-build/build/install")
+
 find_package(gcmake-build REQUIRED)
 
 include(Im_Namen_GOTTes)
