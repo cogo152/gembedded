@@ -1,8 +1,11 @@
+#pragma once
+
+#include <gctest/core/core.hpp>
+
 #include "com_comert_gembedded_device_nativeinterface_JNIUtil.h"
 #include "jniutil.h"
 
-#include "commontest.hpp"
-#include "jvm_test.h"
+#include "jvm.hpp"
 
 #include <stdexcept>
 
@@ -37,7 +40,7 @@ int initJniUtilSuite(void)
         jniEnv->ExceptionDescribe();
         jniEnv->ExceptionClear();
 
-        return GCTEST_FALSE;
+        return 1;
     }
     else
     {
@@ -46,7 +49,7 @@ int initJniUtilSuite(void)
         {
             jniEnv->ExceptionDescribe();
             jniEnv->ExceptionClear();
-            return GCTEST_FALSE;
+            return 2;
         }
         else
         {
@@ -55,7 +58,7 @@ int initJniUtilSuite(void)
             {
                 jniEnv->ExceptionDescribe();
                 jniEnv->ExceptionClear();
-                return GCTEST_FALSE;
+                return 3;
             }
         }
     }
@@ -65,7 +68,7 @@ int initJniUtilSuite(void)
     {
         jniEnv->ExceptionDescribe();
         jniEnv->ExceptionClear();
-        return GCTEST_FALSE;
+        return 4;
     }
     else
     {
@@ -75,7 +78,7 @@ int initJniUtilSuite(void)
         {
             jniEnv->ExceptionDescribe();
             jniEnv->ExceptionClear();
-            return GCTEST_FALSE;
+            return 5;
         }
         else
         {
@@ -84,12 +87,12 @@ int initJniUtilSuite(void)
             {
                 jniEnv->ExceptionDescribe();
                 jniEnv->ExceptionClear();
-                return GCTEST_FALSE;
+                return 6;
             }
         }
     }
 
-    return GCTEST_TRUE;
+    return 0;
 }
 
 int cleanupJniUtilSuite(void)
@@ -105,36 +108,36 @@ int cleanupJniUtilSuite(void)
     pin = NULL;
     notInstance = NULL;
 
-    return GCTEST_TRUE;
+    return 0;
 }
 
-GCTEST_CASE(testInitJniUtilSuite)
+Gctest_Case(testInitJniUtilSuite)
 {
-    gctest_case_config_default(testInitJniUtilSuite);
+    Gctest_Case_Ctor(testInitJniUtilSuite);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
-        assert_equal(initJniUtilSuite(), GCTEST_TRUE);
+        gctest_case_assert_equal(initJniUtilSuite(), 0);
     }
 };
 
-GCTEST_CASE(testSetupJNIUtil)
+Gctest_Case(testSetupJNIUtil)
 {
-    gctest_case_config_default(testSetupJNIUtil);
+    Gctest_Case_Ctor(testSetupJNIUtil);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         Java_com_comert_gembedded_device_nativeinterface_JNIUtil_setupJNIUtil(jniEnv, NULL);
 
-        assert_false(jniEnv->ExceptionCheck());
+        gctest_case_assert_false(jniEnv->ExceptionCheck() == JNI_TRUE);
     }
 };
 
-GCTEST_CASE(testThrowANewRuntimeException)
+Gctest_Case(testThrowANewRuntimeException)
 {
-    gctest_case_config_default(testThrowANewRuntimeException);
+    Gctest_Case_Ctor(testThrowANewRuntimeException);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         // ERROR EXIT_FAILURE: if the env is NULL.
         // throwANewRuntimeException(NULL, "Hello World"); // exits process
@@ -143,25 +146,25 @@ GCTEST_CASE(testThrowANewRuntimeException)
         // throwANewRuntimeException(jniEnv,NULL); // exits process
 
         throwANewRuntimeException(jniEnv, "***TestRuntimeException***");
-        assert_true(jniEnv->ExceptionCheck());
+        gctest_case_assert_true(jniEnv->ExceptionCheck() == JNI_TRUE);
 
         jthrowable exceptionClass = jniEnv->ExceptionOccurred();
         jboolean isInstance = jniEnv->IsInstanceOf(exceptionClass, jniEnv->FindClass(RUNTIMEEXCEPTION_CLASS));
 
-        assert_true(isInstance);
+        gctest_case_assert_true(isInstance == JNI_TRUE);
 
         jniEnv->ExceptionDescribe();
         jniEnv->ExceptionClear();
 
-        assert_false(jniEnv->ExceptionCheck());
+        gctest_case_assert_false(jniEnv->ExceptionCheck() == JNI_TRUE);
     }
 };
 
-GCTEST_CASE(testThrowANewDeviceConfigurationException)
+Gctest_Case(testThrowANewDeviceConfigurationException)
 {
-    gctest_case_config_default(testThrowANewDeviceConfigurationException);
+    Gctest_Case_Ctor(testThrowANewDeviceConfigurationException);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         // ERROR EXIT_FAILURE: if the env is NULL.
         // throwANewDeviceConfigurationException(NULL, "Hello World"); // exits process
@@ -171,26 +174,26 @@ GCTEST_CASE(testThrowANewDeviceConfigurationException)
 
         throwANewDeviceConfigurationException(jniEnv, "***TestDeviceConfigurationException***");
 
-        assert_true(jniEnv->ExceptionCheck());
+        gctest_case_assert_true(jniEnv->ExceptionCheck() == JNI_TRUE);
 
         jthrowable exceptionClass = jniEnv->ExceptionOccurred();
         jboolean isInstance = jniEnv->IsInstanceOf(exceptionClass,
                                                    jniEnv->FindClass(DEVICECONFIGURATIONEXCEPTION_CLASS));
 
-        assert_true(isInstance);
+        gctest_case_assert_true(isInstance == JNI_TRUE);
 
         jniEnv->ExceptionDescribe();
         jniEnv->ExceptionClear();
 
-        assert_false(jniEnv->ExceptionCheck());
+        gctest_case_assert_false(jniEnv->ExceptionCheck() == JNI_TRUE);
     }
 };
 
-GCTEST_CASE(testThrowANewDeviceIOException)
+Gctest_Case(testThrowANewDeviceIOException)
 {
-    gctest_case_config_default(testThrowANewDeviceIOException);
+    Gctest_Case_Ctor(testThrowANewDeviceIOException);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         // ERROR EXIT_FAILURE: if the env is NULL.
         // throwANewDeviceIOException(NULL, "Hello World"); // exits process
@@ -200,26 +203,26 @@ GCTEST_CASE(testThrowANewDeviceIOException)
 
         throwANewDeviceIOException(jniEnv, "***TestDeviceIOException***");
 
-        assert_true(jniEnv->ExceptionCheck());
+        gctest_case_assert_true(jniEnv->ExceptionCheck() == JNI_TRUE);
 
         jthrowable exceptionClass = jniEnv->ExceptionOccurred();
         jboolean isInstance = jniEnv->IsInstanceOf(exceptionClass,
                                                    jniEnv->FindClass(DEVICEIOEXCEPTION_CLASS));
 
-        assert_true(isInstance);
+        gctest_case_assert_true(isInstance == JNI_TRUE);
 
         jniEnv->ExceptionDescribe();
         jniEnv->ExceptionClear();
 
-        assert_false(jniEnv->ExceptionCheck());
+        gctest_case_assert_false(jniEnv->ExceptionCheck() == JNI_TRUE);
     }
 };
 
-GCTEST_CASE(testGetEnumDigit)
+Gctest_Case(testGetEnumDigit)
 {
-    gctest_case_config_default(testGetEnumDigit);
+    Gctest_Case_Ctor(testGetEnumDigit);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         jbyte digitValue = -1;
         JNI_STATUS status;
@@ -227,89 +230,89 @@ GCTEST_CASE(testGetEnumDigit)
         // JNI_ERROR : if the env is NULL.
         status = getEnumDigit(NULL, pin, NULL);
 
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
 
         // JNI_ERROR : if the enumObject is NULL.
         status = getEnumDigit(jniEnv, NULL, NULL);
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
 
         // JNI_ERROR : if the enum does not implement DeviceConstant interface.
         status = getEnumDigit(jniEnv, notInstance, &digitValue);
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
 
         status = getEnumDigit(jniEnv, pin, &digitValue);
-        assert_equal(status, JNI_SUCCESS);
-        assert_equal(digitValue, static_cast<jbyte>(PIN_DIGIT));
+        gctest_case_assert_equal(status, JNI_SUCCESS);
+        gctest_case_assert_equal(digitValue, static_cast<jbyte>(PIN_DIGIT));
     }
 };
 
-GCTEST_CASE(testGetEnumText)
+Gctest_Case(testGetEnumText)
 {
-    gctest_case_config_default(testGetEnumText);
+    Gctest_Case_Ctor(testGetEnumText);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         char text[sizeof PIN_TEXT];
         JNI_STATUS status;
 
         // JNI_ERROR : if the env is NULL.
         status = getEnumText(NULL, pin, text, sizeof(text));
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
 
         // JNI_ERROR : if the enumObject is NULL.
         status = getEnumText(jniEnv, NULL, text, sizeof(text));
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
 
         // JNI_ERROR : if the textToReturn is a NULL char array.
         status = getEnumText(jniEnv, pin, NULL, sizeof(text));
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
 
         // JNI_ERROR : if the enum does not implement DeviceConstant interface.
         status = getEnumText(jniEnv, notInstance, text, sizeof(text));
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
 
         // JNI_ERROR : if the textToReturnSize is less than string size.
         status = getEnumText(jniEnv, pin, text, sizeof(text) - 2); // nil character
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
 
         status = getEnumText(jniEnv, pin, text, sizeof(text));
-        assert_equal(status, JNI_SUCCESS);
-        assert_equal(reinterpret_cast<const char *>(text), PIN_TEXT);
+        gctest_case_assert_equal(status, JNI_SUCCESS);
+        gctest_case_assert_equal(reinterpret_cast<const char *>(text), PIN_TEXT);
     }
 };
 
-GCTEST_CASE(testGetEnum)
+Gctest_Case(testGetEnum)
 {
-    gctest_case_config_default(testGetEnum);
+    Gctest_Case_Ctor(testGetEnum);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         jobject pinToGet;
         JNI_STATUS status;
 
         // JNI_ERROR : if the env is NULL.
         status = getEnum(NULL, PIN_CLASS, PIN_NAME, PIN_SIGNATURE, &pinToGet);
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
 
         // JNI_ERROR : if the fullyQualifiedEnumClassName is NULL.
         status = getEnum(jniEnv, NULL, PIN_NAME, PIN_SIGNATURE, &pinToGet);
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
 
         // JNI_ERROR : if the enumName is NULL.
         status = getEnum(jniEnv, PIN_CLASS, NULL, PIN_SIGNATURE, &pinToGet);
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
 
         // JNI_ERROR : if the enumSignature is NULL.
         status = getEnum(jniEnv, PIN_CLASS, PIN_NAME, NULL, &pinToGet);
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
 
         // JNI_ERROR : if the enumToReturn is NULL.
         status = getEnum(jniEnv, PIN_CLASS, PIN_NAME, PIN_SIGNATURE, NULL);
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
 
         // JNI_ERROR : if the fullyQualifiedEnumClassName is invalid.
         status = getEnum(jniEnv, INVALID_PIN_CLASS, PIN_NAME, PIN_SIGNATURE, NULL);
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
         if (jniEnv->ExceptionCheck())
         {
             jniEnv->ExceptionClear();
@@ -317,7 +320,7 @@ GCTEST_CASE(testGetEnum)
 
         // JNI_ERROR : if the enum does not implement DeviceConstant interface.
         status = getEnum(jniEnv, NOT_INSTANCE_ENUM_CLASS, NOT_INSTANCE_ENUM_NAME, NOT_INSTANCE_ENUM_SIGNATURE, &pinToGet);
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
         if (jniEnv->ExceptionCheck())
         {
             jniEnv->ExceptionClear();
@@ -325,7 +328,7 @@ GCTEST_CASE(testGetEnum)
 
         // JNI_ERROR : if the enumName is invalid.
         status = getEnum(jniEnv, PIN_CLASS, INVALID_PIN_NAME, PIN_SIGNATURE, &pinToGet);
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
         if (jniEnv->ExceptionCheck())
         {
             jniEnv->ExceptionClear();
@@ -333,37 +336,37 @@ GCTEST_CASE(testGetEnum)
 
         // JNI_ERROR : if the enumSignature is invalid.
         status = getEnum(jniEnv, PIN_CLASS, PIN_NAME, INVALID_PIN_SIGNATURE, &pinToGet);
-        assert_equal(status, JNI_ERROR);
+        gctest_case_assert_equal(status, JNI_ERROR);
         if (jniEnv->ExceptionCheck())
         {
             jniEnv->ExceptionClear();
         }
 
         status = getEnum(jniEnv, PIN_CLASS, PIN_NAME, PIN_SIGNATURE, &pinToGet);
-        assert_equal(status, JNI_SUCCESS);
+        gctest_case_assert_equal(status, JNI_SUCCESS);
         jboolean isSameObject = jniEnv->IsSameObject(pin, pinToGet);
-        assert_true(isSameObject);
+        gctest_case_assert_true(isSameObject == JNI_TRUE);
     }
 };
 
-GCTEST_CASE(testShutdownJNIUtil)
+Gctest_Case(testShutdownJNIUtil)
 {
-    gctest_case_config_default(testShutdownJNIUtil);
+    Gctest_Case_Ctor(testShutdownJNIUtil);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         Java_com_comert_gembedded_device_nativeinterface_JNIUtil_shutdownJNIUtil(jniEnv, NULL);
 
-        assert_false(jniEnv->ExceptionCheck());
+        gctest_case_assert_false(jniEnv->ExceptionCheck() == JNI_TRUE);
     }
 };
 
-GCTEST_CASE(testCleanupJniUtilSuite)
+Gctest_Case(testCleanupJniUtilSuite)
 {
-    gctest_case_config_default(testCleanupJniUtilSuite);
+    Gctest_Case_Ctor(testCleanupJniUtilSuite);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
-        assert_equal(cleanupJniUtilSuite(), GCTEST_TRUE);
+        gctest_case_assert_equal(cleanupJniUtilSuite(), 0);
     }
 };

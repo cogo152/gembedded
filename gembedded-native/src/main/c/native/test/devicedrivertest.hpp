@@ -1,12 +1,15 @@
+#pragma once
+
+#include <gctest/core/core.hpp>
+
 #include "devicedriver.h"
+
+#include "jvm.hpp"
 #include "jniutil.h"
 #include "mapper.h"
 
 #include <unistd.h>
 #include <stdexcept>
-
-#include "commontest.hpp"
-#include "jvm_test.h"
 
 #include "i2cmasterdriver.h"
 
@@ -28,10 +31,10 @@ int initDeviceDriverSuite(void)
     {
         jniEnv->ExceptionDescribe();
         jniEnv->ExceptionClear();
-        return GCTEST_FALSE;
+        return 1;
     }
 
-    return GCTEST_TRUE;
+    return 0;
 }
 
 int cleanupDeviceDriverSuite(void)
@@ -43,29 +46,29 @@ int cleanupDeviceDriverSuite(void)
     {
         jniEnv->ExceptionDescribe();
         jniEnv->ExceptionClear();
-        return GCTEST_FALSE;
+        return 1;
     }
 
     jniEnv = NULL;
 
-    return GCTEST_TRUE;
+    return 0;
 }
 
-GCTEST_CASE(testInitDriverSuite)
+Gctest_Case(testInitDriverSuite)
 {
-    gctest_case_config_default(testInitDriverSuite);
+    Gctest_Case_Ctor(testInitDriverSuite);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
-        assert_equal(initDeviceDriverSuite(), GCTEST_TRUE);
+        gctest_case_assert_equal(initDeviceDriverSuite(), 0);
     }
 };
 
-GCTEST_CASE(testSetupDeviceDriver)
+Gctest_Case(testSetupDeviceDriver)
 {
-    gctest_case_config_default(testSetupDeviceDriver);
+    Gctest_Case_Ctor(testSetupDeviceDriver);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         off_t peripheralBase;
 
@@ -94,11 +97,11 @@ GCTEST_CASE(testSetupDeviceDriver)
         fclose(fp);
 
         peripheralBase = buf[0] << 24 | buf[1] << 16 | buf[2] << 8 | buf[3] << 0;
-        assert_equal(static_cast<unsigned int>(peripheralBase), PERIPHERAL_BASE_ADDRESS);
+        gctest_case_assert_equal(static_cast<unsigned int>(peripheralBase), PERIPHERAL_BASE_ADDRESS);
 
         Java_com_comert_gembedded_device_nativeinterface_DeviceDriver_setupDeviceDriver(jniEnv, NULL);
 
-        assert_false(jniEnv->ExceptionCheck());
+        gctest_case_assert_true(jniEnv->ExceptionCheck() == JNI_FALSE);
 
         if (jniEnv->ExceptionCheck())
         {
@@ -106,16 +109,14 @@ GCTEST_CASE(testSetupDeviceDriver)
             jniEnv->ExceptionClear();
             throw std::runtime_error("Exception");
         }
-
-
     }
 };
 
-GCTEST_CASE(testGetDeviceName)
+Gctest_Case(testGetDeviceName)
 {
-    gctest_case_config_default(testGetDeviceName);
+    Gctest_Case_Ctor(testGetDeviceName);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         char deviceName[sizeof DEVICE_NAME];
 
@@ -125,63 +126,63 @@ GCTEST_CASE(testGetDeviceName)
 
         jsize stringSize = jniEnv->GetStringUTFLength(deviceNameString);
         jniEnv->GetStringUTFRegion(deviceNameString, 0, stringSize, deviceName);
-        assert_equal(reinterpret_cast<const char *>(deviceName), DEVICE_NAME);
+        gctest_case_assert_equal(reinterpret_cast<const char *>(deviceName), DEVICE_NAME);
     }
 };
 
-GCTEST_CASE(testRequestGPIOOBase)
+Gctest_Case(testRequestGPIOOBase)
 {
-    gctest_case_config_default(testRequestGPIOOBase);
+    Gctest_Case_Ctor(testRequestGPIOOBase);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         void *ptr = requestGPIOOBase();
-        assert_true(ptr != NULL); // change with pointer check
+        gctest_case_assert_true(ptr != NULL); // change with pointer check
     }
 };
 
-GCTEST_CASE(testRequestClockBase)
+Gctest_Case(testRequestClockBase)
 {
-    gctest_case_config_default(testRequestClockBase);
+    Gctest_Case_Ctor(testRequestClockBase);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         void *ptr = requestClockBase();
-        assert_true(ptr != NULL); // change with pointer check
+        gctest_case_assert_true(ptr != NULL); // change with pointer check
     }
 };
 
-GCTEST_CASE(testRequestPWMBase)
+Gctest_Case(testRequestPWMBase)
 {
-    gctest_case_config_default(testRequestPWMBase);
+    Gctest_Case_Ctor(testRequestPWMBase);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         void *ptr = requestPWMBase();
-        assert_true(ptr != NULL); // change with pointer check
+        gctest_case_assert_true(ptr != NULL); // change with pointer check
     }
 };
 
-GCTEST_CASE(testRequestI2CMasterBase)
+Gctest_Case(testRequestI2CMasterBase)
 {
-    gctest_case_config_default(testRequestI2CMasterBase);
+    Gctest_Case_Ctor(testRequestI2CMasterBase);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         void *ptr = requestI2CMasterBase();
-        assert_true(ptr != NULL); // change with pointer check
+        gctest_case_assert_true(ptr != NULL); // change with pointer check
     }
 };
 
-GCTEST_CASE(testShutdownDeviceDriver)
+Gctest_Case(testShutdownDeviceDriver)
 {
-    gctest_case_config_default(testShutdownDeviceDriver);
+    Gctest_Case_Ctor(testShutdownDeviceDriver);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         Java_com_comert_gembedded_device_nativeinterface_DeviceDriver_shutdownDeviceDriver(jniEnv, NULL);
 
-        assert_false(jniEnv->ExceptionCheck());
+        gctest_case_assert_true(jniEnv->ExceptionCheck() == JNI_FALSE);
 
         if (jniEnv->ExceptionCheck())
         {
@@ -192,12 +193,12 @@ GCTEST_CASE(testShutdownDeviceDriver)
     }
 };
 
-GCTEST_CASE(testCleanupDeviceDriverSuite)
+Gctest_Case(testCleanupDeviceDriverSuite)
 {
-    gctest_case_config_default(testCleanupDeviceDriverSuite);
+    Gctest_Case_Ctor(testCleanupDeviceDriverSuite);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
-        assert_equal(cleanupDeviceDriverSuite(), GCTEST_TRUE);
+        gctest_case_assert_equal(cleanupDeviceDriverSuite(), 0);
     }
 };

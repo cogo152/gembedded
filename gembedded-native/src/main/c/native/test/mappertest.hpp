@@ -1,6 +1,8 @@
-#include "mapper.h"
+#pragma once
 
-#include "commontest.hpp"
+#include <gctest/core/core.hpp>
+
+#include "mapper.h"
 
 #define FILE_NAME ("/dev/gpiomem")
 #define LENGTH (0xF4)
@@ -11,44 +13,44 @@
 
 static void *pointer = NULL;
 
-GCTEST_CASE(testMapBaseRegister)
+Gctest_Case(testMapBaseRegister)
 {
-    gctest_case_config_default(testMapBaseRegister);
+    Gctest_Case_Ctor(testMapBaseRegister);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         MAPPER_STATUS status;
 
         // MAPPER_FILE_NAME_ERROR : if the fileName is NULL.
         status = mapBaseRegister(NULL, LENGTH, OFFSET, &pointer);
-        assert_equal(status, MAPPER_FILE_NAME_ERROR);
+        gctest_case_assert_equal(status, MAPPER_FILE_NAME_ERROR);
 
         // MAPPER_LENGTH_ERROR : if the length is less than 1.
         status = mapBaseRegister(FILE_NAME, INVALID_LENGTH, OFFSET, &pointer);
-        assert_equal(status, MAPPER_LENGTH_ERROR);
+        gctest_case_assert_equal(status, MAPPER_LENGTH_ERROR);
 
         // MAPPER_POINTER_ERROR : if the pointer is NULL.
         status = mapBaseRegister(FILE_NAME, LENGTH, OFFSET, NULL);
-        assert_equal(status, MAPPER_POINTER_ERROR);
+        gctest_case_assert_equal(status, MAPPER_POINTER_ERROR);
 
         // MAPPER_FILE_OPEN_ERROR : if the fileName is invalid.
         status = mapBaseRegister(INVALID_FILE_NAME, LENGTH, OFFSET, &pointer);
-        assert_equal(status, MAPPER_FILE_OPEN_ERROR);
+        gctest_case_assert_equal(status, MAPPER_FILE_OPEN_ERROR);
 
         // MAPPER_MAP_ERROR : if the mapping fails.
         status = mapBaseRegister(FILE_NAME, LENGTH, 1, &pointer);
-        assert_equal(status, MAPPER_MAP_ERROR);
+        gctest_case_assert_equal(status, MAPPER_MAP_ERROR);
 
         status = mapBaseRegister(FILE_NAME, LENGTH, OFFSET, &pointer);
-        assert_equal(status, MAPPER_SUCCESS);
+        gctest_case_assert_equal(status, MAPPER_SUCCESS);
     }
 };
 
-GCTEST_CASE(testUnmapBaseRegister)
+Gctest_Case(testUnmapBaseRegister)
 {
-    gctest_case_config_default(testUnmapBaseRegister);
+    Gctest_Case_Ctor(testUnmapBaseRegister);
 
-    gctest_case_now
+    Gctest_Case_Assert()
     {
         MAPPER_STATUS status;
 
@@ -58,22 +60,22 @@ GCTEST_CASE(testUnmapBaseRegister)
 
         // MAPPER_POINTER_ERROR : if the **pointer is NULL.
         status = unmapBaseRegister(NULL, LENGTH);
-        assert_equal(status, MAPPER_POINTER_ERROR);
+        gctest_case_assert_equal(status, MAPPER_POINTER_ERROR);
 
         // MAPPER_POINTER_ERROR : if the *pointer is NULL.
         status = unmapBaseRegister(&nullPointer, LENGTH);
-        assert_equal(status, MAPPER_POINTER_ERROR);
+        gctest_case_assert_equal(status, MAPPER_POINTER_ERROR);
 
         // MAPPER_LENGTH_ERROR : if the length is less than 1.
         status = unmapBaseRegister(&pointer, INVALID_LENGTH);
-        assert_equal(status, MAPPER_LENGTH_ERROR);
+        gctest_case_assert_equal(status, MAPPER_LENGTH_ERROR);
 
         // MAPPER_UNMAP_ERROR : if the unmapping fails.
         status = unmapBaseRegister(&invalidPointer, LENGTH);
-        assert_equal(status, MAPPER_UNMAP_ERROR);
+        gctest_case_assert_equal(status, MAPPER_UNMAP_ERROR);
 
         status = unmapBaseRegister(&pointer, LENGTH);
-        assert_equal(status, MAPPER_SUCCESS);
+        gctest_case_assert_equal(status, MAPPER_SUCCESS);
         // assert_equal(pointer, nullptr);
     }
 };

@@ -14,9 +14,13 @@
       "compilerPath": "/usr/bin/gcc",
       "intelliSenseMode": "linux-gcc-arm64",
       "configurationProvider": "ms-vscode.cmake-tools",
-      "includePath": ["${gEmbeddedIncludePath}"],
+      "includePath": [
+        "${gEmbeddedIncludePath}"
+      ],
       "browse": {
-        "path": ["${gEmbeddedIncludePath}"],
+        "path": [
+          "${gEmbeddedIncludePath}"
+        ],
         "limitSymbolsToIncludedHeaders": true
       },
       "cStandard": "gnu23",
